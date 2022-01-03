@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+          #navbar {
+        width: 100%;
+        height: 60px;
+        border: 1px solid black;
+        display: flex;
+        flex-direction: row;
+        font-size: 35px;
+        font-weight: bolder;
+        background-color: teal;
+      }
+      #div1 {
+        padding-top: 0.3%;
+        margin-left: 70%;
+      }
+      #div2 {
+        padding-top: 0.3%;
+        margin-left: 7%;
+      }
+      #div3 {
+        padding-top: 0.3%;
+        margin-left: 7%;
+      }
+      #btn {
+        width: 200px;
+        height: 30px;
+      }
+      #dishDiv {
+        padding: 1%;
+        display: grid;
+        width: 100%;
+        grid-template-columns: repeat(4, 20%);
+        gap: 2%;
+        height: 400px;
+      }
+      #dish{
+            /* border: 1px solid red; */
+        }
+      #photo {
+        width: 50%;
+      }
+      #btn1 {
+        width: 200px;
+        height: 50px;
+        background-color: red;
+        font-size: 24px;
+        font-weight: bolder;
+        margin-bottom:5%;
+      }
+      #btn2 {
+        width: 200px;
+        height: 50px;
+        background-color: red;
+        font-size: 24px;
+        font-weight: bolder;
+      }
+    
+    </style>
+  </head>
+  <body>
+    <div id="navbar">
+      <div id="div1">Login</div>
+      <div id="div2">Signup</div>
+      <div id="div3">Menu</div>
+    </div>
+    <h1>Menu Page</h1>
+    <button id="btn" onclick="getMeal()">Get Meal</button>
+    <button id="btn2">Go To Cart</button>
+    <div id="dishDiv">
+      <div id="dish"></div>
+    </div>
+  </body>
+</html>
+<script>
+  // www.themealdb.com/api/json/v1/1/random.php
+
+  async function getMeal() {
+    try {
+      let url = "https://www.themealdb.com/api/json/v1/1/random.php";
+      let data = await fetch(url);
+      let meaData = await data.json();
+      let mealData = meaData.meals[0];
+      dataShow(mealData);
+      console.log(mealData);
+    } catch (er) {
+      console.log("try again", er);
+    }
+  }
+  function dataShow(data) {
+    var meals = JSON.parse(localStorage.getItem("cartMeal")) || [];
+    appendMeals(meals);
+    var cartData = JSON.parse(localStorage.getItem("cartData")) || [];
+
+    var obj = {
+      img: data.strMealThumb,
+      name: data.strMeal,
+      price: Math.floor(Math.random() * 500),
+    };
+
+    meals.push(obj);
+    localStorage.setItem("cartMeal", JSON.stringify(meals));
+
+    function appendMeals(meals) {
+      console.log(meals);
+      meals.map(function (dta) {
+        var img = document.createElement("img");
+        img.src = dta.img;
+        img.setAttribute("id", "photo");
+
+        var h1 = document.createElement("h1");
+        h1.textContent = `Dish:- ${dta.name}`;
+
+        var h2 = document.createElement("h1");
+        h2.textContent = `Price:- ${dta.price}`;
+
+        var btn = document.createElement("button");
+        btn.textContent = "Add To Cart";
+        btn.setAttribute("id", "btn1");
+        btn.addEventListener("click", function () {
+          addCart(dta);
+        });
+
+        document.getElementById("dish").append(img, h1, h2,btn);
+      });
+      function addCart(mData) {
+        cartData.push(mData);
+        localStorage.setItem("cartData", JSON.stringify(cartData));
+      }
+    }
+  }
+  document.getElementById("btn2").addEventListener("click", cartFun);
+
+  function cartFun() {
+    window.location.href = "cart.html";
+  }
+  document.getElementById("div1").addEventListener("click", logFun);
+
+  function logFun() {
+    window.location.href = "index.html";
+  }
+
+  document.getElementById("div2").addEventListener("click", signFun);
+
+  function signFun() {
+    window.location.href = "index.html";
+  }
+
+  document.getElementById("div3").addEventListener("click", menuFun);
+
+  function menuFun() {
+    window.location.href = "menu.html";
+  }
+</script>
